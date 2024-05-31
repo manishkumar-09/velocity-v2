@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import { JWT } from "next-auth/jwt";
 
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
 import { pages } from "next/dist/build/templates/app-page";
 
 export const authOptions = {
@@ -35,8 +37,8 @@ export const authOptions = {
             return {
               id: isUser.id,
               name: isUser.name,
-              email: isUser.id,
-              phone: isUser.id,
+              email: isUser.email,
+              phone: isUser.phone,
             };
           } else {
             return null;
@@ -61,6 +63,14 @@ export const authOptions = {
         return null;
       },
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID || "",
+      clientSecret: process.env.GITHUB_SECRET || "",
+    }),
   ],
   callbacks: {
     async jwt({ token, user }: any) {
@@ -69,14 +79,16 @@ export const authOptions = {
       }
       return token;
     },
-    async session({ session, token }: any) {
-      session.user.id = token.id;
-      return session;
+    async session({ session, token, user }: any) {
+      if (session && session.user) {
+        session.user.id = token.id;
+        return session;
+      }
     },
   },
-  pages: {
-    signIn: "./signin",
-  },
+  // pages: {
+  //   signIn: "./signin",
+  // },
 };
 
 // export default NextAuth(authOptions)
