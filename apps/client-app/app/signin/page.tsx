@@ -1,3 +1,15 @@
 export default function () {
-  return <div>sign in working</div>;
+  return (
+    <div className="">
+      <div>
+        <input type="text" placeholder="Phone Number" />
+      </div>
+      <div>
+        <input type="password" placeholder="Password" />
+      </div>
+      <div>
+        <button>Signin</button>
+      </div>
+    </div>
+  );
 }

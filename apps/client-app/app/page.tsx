@@ -1,6 +1,16 @@
-import { PrismaClient } from "@repo/db/client";
-const prisma = new PrismaClient();
+// export default function Page(): JSX.Element {
+//   const session = useSession();
+
+// }
+"use client";
+import { Appbar } from "@repo/ui/Appbar";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function Page(): JSX.Element {
-  return <div className="bg-red-800">Tailwind is working</div>;
+  const session = useSession();
+  return (
+    <div>
+      <Appbar onSignin={signIn} onSignout={signOut} user={session.data?.user} />
+    </div>
+  );
 }
