@@ -43,22 +43,24 @@ export const authOptions = {
           } else {
             return null;
           }
-        }
-        try {
-          const user = await prisma.user.create({
-            data: {
-              phone: credentials.phone,
-              password: hashedPassword,
-              email: "",
-            },
-          });
-          return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-          };
-        } catch (err) {
-          console.log(err);
+        } else {
+          try {
+            const user = await prisma.user.create({
+              data: {
+                phone: credentials.phone,
+                password: hashedPassword,
+                email: credentials.phone,
+              },
+            });
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              phone: user.phone,
+            };
+          } catch (err) {
+            console.log(err);
+          }
         }
         return null;
       },
@@ -76,12 +78,17 @@ export const authOptions = {
     async jwt({ token, user }: any) {
       if (user) {
         token.id = user.id;
+        if (user.phone) {
+          token.phone = user.phone;
+        }
       }
       return token;
     },
     async session({ session, token, user }: any) {
       if (session && session.user) {
         session.user.id = token.id;
+        if (session.user.phone === token.phone) {
+        }
         return session;
       }
     },
