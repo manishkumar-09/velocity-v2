@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import prisma from "@repo/db/src";
 
 const app = express();
-
+app.use(express.json());
 app.get("/bank-webhook", async (req: Request, res: Response) => {
   //zod validation section need
   const paymentInfo: { token: string; userId: string; amount: number } = {
